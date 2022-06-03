@@ -5,7 +5,6 @@ import { ProductList } from './styles';
 import { api } from '../../services/api';
 import { formatPrice } from '../../util/format';
 import { useCart } from '../../hooks/useCart';
-import { ProductTable } from '../Cart/styles';
 
 interface Product {
   id: number;

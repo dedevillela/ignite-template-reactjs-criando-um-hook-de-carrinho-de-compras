@@ -1,7 +1,7 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { api } from '../services/api';
-import { Product, Stock } from '../types';
+import { Product } from '../types';
 
 interface CartProviderProps {
   children: ReactNode;
@@ -32,6 +32,22 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
     return [];
   });
+  // Keeps a reference from array of products
+  const prevCartRef = useRef<Product[]>();
+  // Checks previos cart value
+  useEffect(() => {
+    prevCartRef.current = cart;
+  });
+  // If different from 'null or 'undefined', set cart value
+  const cartPreviousValue = prevCartRef.current ?? cart;
+
+  useEffect(() => {
+    // If previous cart value is different from current cart value, cart must be updated
+    if (cartPreviousValue !== cart) {
+      // Stores cart data in localStorage
+      localStorage.setItem('@RocketShoes:cart', JSON.stringify(cart));
+    }
+  }, [cart, cartPreviousValue]);
 
   const addProduct = async (productId: number) => {
     try {
@@ -70,8 +86,6 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       }
       // Update the cart
       setCart(updatedCart);
-      // Store cart data in localStorage
-      localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCart));
     } catch {
       // Shows message error for adding a product to cart
       toast.error('Erro na adição do produto');
@@ -90,8 +104,6 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
         updatedCart.splice(productIndex, 1);
         // Updates cart contents
         setCart(updatedCart);
-        // Updates localStorage
-        localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCart));
       } else {
         // Forces error and proceeds to catch
         throw Error();
@@ -130,8 +142,6 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
         productExists.amount = amount;
         // Updates cart contents
         setCart(updatedCart);
-        // Updates localStorage
-        localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCart));
       } else {
         // Forces error and proceeds to catch
         throw Error();
