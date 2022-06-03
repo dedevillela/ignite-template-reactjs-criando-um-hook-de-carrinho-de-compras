@@ -22,7 +22,7 @@ export const ProductList = styled.ul`
     > strong {
       font-size: 16px;
       line-height: 20px;
-      color: #333;
+      color: var(--dark-color);
       margin-top: 5px;
     }
 
@@ -33,7 +33,7 @@ export const ProductList = styled.ul`
     }
 
     button {
-      background: #7159c1;
+      background: var(--highlight-color);
       color: #fff;
       border: 0;
       border-radius: 4px;
